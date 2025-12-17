@@ -6,6 +6,17 @@
 
 @theme{
     --header-height: 5rem;
+    --site-margin: clamp(
+            1rem,
+            calc(
+                    (1 - ((2.5 - 1) / (var(--site--viewport-max) - var(--site--viewport-min))) * var(--site--viewport-min)) * 1rem
+                    + ((2.5 - 1) / (var(--site--viewport-max) - var(--site--viewport-min))) * 100vw
+            ),
+            2.5rem
+    );
+    --site--viewport-max: 90;
+    --site--viewport-min: 20;
+
 }
 
 @theme inline {
