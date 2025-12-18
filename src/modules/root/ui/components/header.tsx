@@ -14,44 +14,45 @@ const Header = () => {
 
     useIsomorphicLayoutEffect(()=>{
         if(!navRef.current) return;
-
         const ctx = gsap.context((c)=>{
-
-            const scrollTimeline = gsap.timeline({
-                scrollTrigger: {
-                    trigger: navRef.current,
-                    start: 'top top',
-                    end: '+=1',
-                    toggleActions: 'play none none reverse',
-                }
-            })
-            scrollTimeline
-                .to(c.selector?.('#nav_desktop_links_wrap'),{
-                    y: -50,
-                    duration: DURATION
+            const mm = gsap.matchMedia();
+            mm.add('(min-width: 1024px)', ()=> {
+                const scrollTimeline = gsap.timeline({
+                    scrollTrigger: {
+                        trigger: navRef.current,
+                        start: 'top top',
+                        end: '+=1',
+                        toggleActions: 'play none none reverse',
+                    }
                 })
-                .to(c.selector?.('#nav_desktop_right_btns'), {
-                    xPercent: -50,
-                    duration: DURATION
-                },'<')
-                .fromTo(c.selector?.('#nav_menu_line_wrapper'),
-                    {
-                        scale: 0,
-                    },
-                    {
-                    transformOrigin: 'center center',
-                    scale: 1,
-                    duration: 0.1
-                }, '-=0.4')
-        }, navRef)
+                scrollTimeline
+                    .to(c.selector?.('#nav_desktop_links_wrap'),{
+                        y: -50,
+                        duration: DURATION
+                    })
+                    .to(c.selector?.('#nav_desktop_right_btns'), {
+                        xPercent: -50,
+                        duration: DURATION
+                    },'<')
+                    .fromTo(c.selector?.('#nav_menu_line_wrapper'),
+                        {
+                            scale: 0,
+                        },
+                        {
+                            transformOrigin: 'center center',
+                            scale: 1,
+                            duration: 0.1
+                        }, '-=0.4')
+            })
 
+        }, navRef)
         return () => ctx.revert();
 
     }, [])
 
     return (
         <nav ref={navRef} className='h-[var(--header-height)] z-50 mix-blend-difference fixed w-full'>
-            <div className='mx-auto grid h-full py-4 gap-8 w-[calc(100%-var(--site-margin)*2)] grid-cols-12 auto-cols-fr'
+            <div className='mx-auto grid h-full py-4 gap-[var(--site-gutter)] w-[calc(100%-var(--site-margin)*2)] grid-cols-12 auto-cols-fr'
                 style={{
                     gridTemplateRows: 'auto'
                 }}
@@ -78,31 +79,12 @@ const Header = () => {
                                 ))
                             }
                         </ul>
-                        <div id='nav_desktop_right_btns' className='flex justify-start items-center translate-x-1/2'>
+                        <div id='nav_desktop_right_btns' className='flex justify-start items-center lg:translate-x-1/2'>
                             <div
                                 id='btn-group'
                                 className='w-[86px]'>
                                 <Link href='/contact' className='flex items-center relative'>
-                                    <div id='contact-arrow-left' className='h-4 w-4 -left-4 absolute opacity-0'>
-                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="100%"
-                                             className="btn-bubble-arrow__arrow-svg">
-                                            <polyline points="10 6 18 12 10 18" fill="none" stroke="currentColor"
-                                                      strokeMiterlimit="10" strokeWidth="1.5"></polyline>
-                                            <line x1="18" y1="12" x2="0" y2="12" fill="none" stroke="currentColor"
-                                                  strokeMiterlimit="10" strokeWidth="1.5"></line>
-                                        </svg>
-                                    </div>
-                                    <span className='uppercase text-sm pr-1 relative'>Contact</span>
-                                    <div id='contact-arrow-right' className='h-4 w-4 right-0 absolute items-center justify-center flex'>
-                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="100%"
-                                             className="btn-bubble-arrow__arrow-svg">
-                                            <polyline points="10 6 18 12 10 18" fill="none" stroke="currentColor"
-                                                      strokeMiterlimit="10" strokeWidth="1.5"></polyline>
-                                            <line x1="18" y1="12" x2="0" y2="12" fill="none" stroke="currentColor"
-                                                  strokeMiterlimit="10" strokeWidth="1.5"></line>
-                                        </svg>
-                                    </div>
-
+                                    <span className='uppercase text-sm font-semibold pr-1 relative'>Contact</span>
                                 </Link>
                             </div>
                             <div id='nav_menu_toggle_container' className='flex justify-start w-20'>
@@ -126,3 +108,4 @@ const Header = () => {
 };
 
 export default Header;
+
