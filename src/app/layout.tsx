@@ -23,7 +23,7 @@ export default function RootLayout({
         className={`${inter.className} antialiased dark`}
       >
         <Header/>
-        <div className='p-[var(--header-height)]'>
+        <div className='pt-[var(--header-height)]'>
             {children}
         </div>
       </body>

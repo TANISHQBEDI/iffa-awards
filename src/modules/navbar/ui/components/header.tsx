@@ -6,6 +6,7 @@ import {NAV_ITEMS} from "@/modules/navbar/constants/nav-items";
 import {DURATION, gsap} from "@/lib/gsap";
 import useIsomorphicLayoutEffect from "@/lib/gsap/custom-effect";
 import NavMenuOverlay from "@/modules/navbar/ui/components/nav-menu-overlay";
+import {cn} from "@/lib/utils";
 
 const Header = () => {
     const navRef = useRef<HTMLDivElement>(null);
@@ -64,13 +65,13 @@ const Header = () => {
     }, [])
 
     return (
-        <nav ref={navRef} className='h-[var(--header-height)] z-50 mix-blend-difference fixed w-full'>
+        <nav ref={navRef} className={cn('h-[var(--header-height)] z-50 fixed w-full', isMenuOpen ? "mix-blend-normal" : "mix-blend-difference")}>
             <div className='mx-auto grid h-full py-4 gap-[var(--site-gutter)] w-[calc(100%-var(--site-margin)*2)] grid-cols-12 auto-cols-fr'
                 style={{
                     gridTemplateRows: 'auto'
                 }}
             >
-                <Link href='/' className='col-span-2 h-full items-center flex text-3xl font-semibold'>
+                <Link href='/' className='col-span-2 h-full items-center flex text-3xl font-semibold z-40'>
                     <span className='w-full'>
                         IFFA
                     </span>
@@ -92,7 +93,7 @@ const Header = () => {
                                 ))
                             }
                         </ul>
-                        <div id='nav_desktop_right_btns' className='flex justify-start items-center lg:translate-x-1/2'>
+                        <div id='nav_desktop_right_btns' className='flex justify-start items-center lg:translate-x-1/2 z-40'>
                             <div
                                 id='btn-group'
                                 className='w-[86px]'>
@@ -100,7 +101,7 @@ const Header = () => {
                                     <span className='uppercase text-sm font-semibold pr-1 relative'>Contact</span>
                                 </Link>
                             </div>
-                            <div id='nav_menu_toggle_container' className='flex justify-start w-20 z-40'>
+                            <div id='nav_menu_toggle_container' className='flex justify-start w-20'>
                                 <div id='nav_menu_btn_spacer' className='w-8'/>
                                 <div
                                     onClick={()=> setIsMenuOpen(!isMenuOpen)}
