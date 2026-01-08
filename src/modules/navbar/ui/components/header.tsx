@@ -1,14 +1,27 @@
 'use client'
-import React, {useRef} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import Link from "next/link";
-import {NAV_ITEMS} from "@/modules/root/constants/nav-items";
+import {NAV_ITEMS} from "@/modules/navbar/constants/nav-items";
 
 import {DURATION, gsap} from "@/lib/gsap";
 import useIsomorphicLayoutEffect from "@/lib/gsap/custom-effect";
-import {setupGsapHover} from "@/lib/gsap/gsap-utils";
+import NavMenuOverlay from "@/modules/navbar/ui/components/nav-menu-overlay";
 
 const Header = () => {
     const navRef = useRef<HTMLDivElement>(null);
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
+    useEffect(() => {
+        if (isMenuOpen) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = 'unset';
+        }
+
+        // Cleanup on unmount
+        return () => {
+            document.body.style.overflow = 'unset';
+        };
+    }, [isMenuOpen]);
 
     // Use gsap timeline for hover effects on contact button arrows
 
@@ -87,9 +100,12 @@ const Header = () => {
                                     <span className='uppercase text-sm font-semibold pr-1 relative'>Contact</span>
                                 </Link>
                             </div>
-                            <div id='nav_menu_toggle_container' className='flex justify-start w-20'>
+                            <div id='nav_menu_toggle_container' className='flex justify-start w-20 z-40'>
                                 <div id='nav_menu_btn_spacer' className='w-8'/>
-                                <div id='nav_menu_toggle_wrapper' className='w-12 h-12 flex justify-center items-center bg-white/20 lg:bg-transparent hover:bg-white/20'>
+                                <div
+                                    onClick={()=> setIsMenuOpen(!isMenuOpen)}
+                                    id='nav_menu_toggle_wrapper'
+                                    className='w-12 h-12 flex justify-center items-center bg-white/20 lg:bg-transparent hover:bg-white/20'>
                                     <button id='nav_menu_toggle' className='h-full'>
                                         <div id='nav_menu_line_wrapper' className='px-[3px] py-[8px] gap-1 flex-col flex justify-center'>
                                             <div id='nav_menu_line_top' className='bg-white h-[2px] w-[18px]'/>
@@ -103,6 +119,9 @@ const Header = () => {
                 </div>
 
             </div>
+            {
+                isMenuOpen && <NavMenuOverlay/>
+            }
         </nav>
     );
 };
