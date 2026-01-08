@@ -1,14 +1,28 @@
 'use client'
-import React, {useRef} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import Link from "next/link";
-import {NAV_ITEMS} from "@/modules/root/constants/nav-items";
+import {excludedNavIds, NAV_ITEMS} from "@/modules/navbar/constants/nav-items";
 
 import {DURATION, gsap} from "@/lib/gsap";
 import useIsomorphicLayoutEffect from "@/lib/gsap/custom-effect";
-import {setupGsapHover} from "@/lib/gsap/gsap-utils";
+import NavMenuOverlay from "@/modules/navbar/ui/components/nav-menu-overlay";
+import {cn} from "@/lib/utils";
 
 const Header = () => {
     const navRef = useRef<HTMLDivElement>(null);
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
+    useEffect(() => {
+        if (isMenuOpen) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = 'unset';
+        }
+
+        // Cleanup on unmount
+        return () => {
+            document.body.style.overflow = 'unset';
+        };
+    }, [isMenuOpen]);
 
     // Use gsap timeline for hover effects on contact button arrows
 
@@ -51,13 +65,13 @@ const Header = () => {
     }, [])
 
     return (
-        <nav ref={navRef} className='h-[var(--header-height)] z-50 mix-blend-difference fixed w-full'>
+        <nav ref={navRef} className={cn('h-[var(--header-height)] z-50 fixed w-full', isMenuOpen ? "mix-blend-normal" : "mix-blend-difference")}>
             <div className='mx-auto grid h-full py-4 gap-[var(--site-gutter)] w-[calc(100%-var(--site-margin)*2)] grid-cols-12 auto-cols-fr'
                 style={{
                     gridTemplateRows: 'auto'
                 }}
             >
-                <Link href='/' className='col-span-2 h-full items-center flex text-3xl font-semibold'>
+                <Link href='/' className='col-span-2 h-full items-center flex text-3xl font-semibold z-40'>
                     <span className='w-full'>
                         IFFA
                     </span>
@@ -69,17 +83,18 @@ const Header = () => {
                     <div id='nav_desktop_right' className='flex justify-end w-full items-center gap-4'>
                         <ul id='nav_desktop_links_wrap' className='lg:flex gap-16 hidden'>
                             {
-                                NAV_ITEMS.map(({id, label, href})=>(
-                                    <li key={id}>
-                                        <Link href={href} className='space-x-1 nav_desktop_link'>
-                                            <sup className='text-2xs'>{id}</sup>
-                                            <span className='text-sm'>{label}</span>
-                                        </Link>
-                                    </li>
-                                ))
+                                NAV_ITEMS.filter(item => !excludedNavIds.includes(item.id))
+                                    .map(({id, label, href})=>(
+                                        <li key={id}>
+                                            <Link href={href} className='space-x-1 nav_desktop_link'>
+                                                {/*<sup className='text-2xs'>{id}</sup>*/}
+                                                <span className='text-sm'>{label}</span>
+                                            </Link>
+                                        </li>
+                                    ))
                             }
                         </ul>
-                        <div id='nav_desktop_right_btns' className='flex justify-start items-center lg:translate-x-1/2'>
+                        <div id='nav_desktop_right_btns' className='flex justify-start items-center lg:translate-x-1/2 z-40'>
                             <div
                                 id='btn-group'
                                 className='w-[86px]'>
@@ -89,7 +104,10 @@ const Header = () => {
                             </div>
                             <div id='nav_menu_toggle_container' className='flex justify-start w-20'>
                                 <div id='nav_menu_btn_spacer' className='w-8'/>
-                                <div id='nav_menu_toggle_wrapper' className='w-12 h-12 flex justify-center items-center bg-white/20 lg:bg-transparent hover:bg-white/20'>
+                                <div
+                                    onClick={()=> setIsMenuOpen(!isMenuOpen)}
+                                    id='nav_menu_toggle_wrapper'
+                                    className='w-12 h-12 flex justify-center items-center bg-white/20 lg:bg-transparent hover:bg-white/20'>
                                     <button id='nav_menu_toggle' className='h-full'>
                                         <div id='nav_menu_line_wrapper' className='px-[3px] py-[8px] gap-1 flex-col flex justify-center'>
                                             <div id='nav_menu_line_top' className='bg-white h-[2px] w-[18px]'/>
@@ -103,6 +121,9 @@ const Header = () => {
                 </div>
 
             </div>
+            {
+                isMenuOpen && <NavMenuOverlay/>
+            }
         </nav>
     );
 };
