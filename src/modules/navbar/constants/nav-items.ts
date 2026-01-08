@@ -4,6 +4,8 @@ type NavItem = {
     href: string;
 }
 
+export const excludedNavIds: string[] = ['00']
+
 export const NAV_ITEMS: NavItem[] = [
     {
         id: '00',

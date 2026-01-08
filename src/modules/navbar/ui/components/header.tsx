@@ -1,7 +1,7 @@
 'use client'
 import React, {useEffect, useRef, useState} from 'react';
 import Link from "next/link";
-import {NAV_ITEMS} from "@/modules/navbar/constants/nav-items";
+import {excludedNavIds, NAV_ITEMS} from "@/modules/navbar/constants/nav-items";
 
 import {DURATION, gsap} from "@/lib/gsap";
 import useIsomorphicLayoutEffect from "@/lib/gsap/custom-effect";
@@ -83,14 +83,15 @@ const Header = () => {
                     <div id='nav_desktop_right' className='flex justify-end w-full items-center gap-4'>
                         <ul id='nav_desktop_links_wrap' className='lg:flex gap-16 hidden'>
                             {
-                                NAV_ITEMS.map(({id, label, href})=>(
-                                    <li key={id}>
-                                        <Link href={href} className='space-x-1 nav_desktop_link'>
-                                            <sup className='text-2xs'>{id}</sup>
-                                            <span className='text-sm'>{label}</span>
-                                        </Link>
-                                    </li>
-                                ))
+                                NAV_ITEMS.filter(item => !excludedNavIds.includes(item.id))
+                                    .map(({id, label, href})=>(
+                                        <li key={id}>
+                                            <Link href={href} className='space-x-1 nav_desktop_link'>
+                                                {/*<sup className='text-2xs'>{id}</sup>*/}
+                                                <span className='text-sm'>{label}</span>
+                                            </Link>
+                                        </li>
+                                    ))
                             }
                         </ul>
                         <div id='nav_desktop_right_btns' className='flex justify-start items-center lg:translate-x-1/2 z-40'>
